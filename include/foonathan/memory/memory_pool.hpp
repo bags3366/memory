@@ -19,11 +19,14 @@
 #include "error.hpp"
 #include "memory_arena.hpp"
 #include "memory_pool_type.hpp"
+#include "iostream"
+#include "cstddef"
 
 namespace foonathan
 {
     namespace memory
     {
+
         namespace detail
         {
             struct memory_pool_leak_handler
@@ -409,11 +412,9 @@ namespace foonathan
                 return state.try_deallocate_node(node);
             }
 
-            /// \effects Forwards to \ref memory_pool::deallocate_array() with the same size adjustment.
-            /// \returns Whether the deallocation was successful.
             static bool try_deallocate_array(allocator_type& state, void* array, std::size_t count,
                                              std::size_t size, std::size_t alignment) noexcept
-            {
+	    {
                 if (size > traits::max_node_size(state)
                     || count * size > traits::max_array_size(state)
                     || alignment > traits::max_alignment(state))
@@ -421,6 +422,8 @@ namespace foonathan
                 return state.try_deallocate_array(array, count, size);
             }
         };
+
+
 
 #if FOONATHAN_MEMORY_EXTERN_TEMPLATE
         extern template class allocator_traits<memory_pool<node_pool>>;
